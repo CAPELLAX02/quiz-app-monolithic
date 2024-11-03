@@ -5,6 +5,7 @@ import com.capellax.quizapp.dao.QuizDAO;
 import com.capellax.quizapp.model.Question;
 import com.capellax.quizapp.model.QuestionWrapper;
 import com.capellax.quizapp.model.Quiz;
+import com.capellax.quizapp.model.Response;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,26 @@ public class QuizService {
                 .toList();
 
         return new ResponseEntity<>(questionForUser, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+        Optional<Quiz> quizOptional = quizDAO.findById(id);
+        if (quizOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Quiz quiz = quizOptional.get();
+        List<Question> questions = quiz.getQuestions();
+
+        int rightAnswerCounter = 0;
+
+        for (int i = 0; i < responses.size() && i < questions.size(); i++) {
+            if (responses.get(i).getResponse().equals(questions.get(i).getRightAnswer())) {
+                rightAnswerCounter++;
+            }
+        }
+
+        return new ResponseEntity<>(rightAnswerCounter, HttpStatus.OK);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.capellax.quizapp.controller;
 
 import com.capellax.quizapp.model.QuestionWrapper;
+import com.capellax.quizapp.model.Response;
 import com.capellax.quizapp.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,14 @@ public class QuizController {
             @PathVariable Integer id
     ) {
         return quizService.getQuizQuestions(id);
+    }
+
+    @PostMapping("/submit/{id}")
+    public ResponseEntity<Integer> submitQuiz(
+        @PathVariable Integer id,
+        @RequestBody List<Response> responses
+    ) {
+        return quizService.calculateResult(id, responses);
     }
 
 }
