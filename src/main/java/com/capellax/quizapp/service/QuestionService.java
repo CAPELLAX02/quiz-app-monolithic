@@ -16,4 +16,16 @@ public class QuestionService {
     public List<Question> getAllQuestions() {
         return questionDAO.findAll();
     }
+
+    public List<Question> getQuestionsByCategory(
+            String category
+    ) {
+        return questionDAO.findByCategoryIgnoreCase(category);
+    }
+
+    public Question addQuestion(
+            Question question
+    ) {
+        return questionDAO.save(question);
+    }
 }
