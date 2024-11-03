@@ -3,6 +3,7 @@ package com.capellax.quizapp.controller;
 import com.capellax.quizapp.model.Question;
 import com.capellax.quizapp.service.QuestionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,19 +16,19 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping("/allQuestions")
-    public List<Question> getAllQuestions() {
+    public ResponseEntity<List<Question>> getAllQuestions() {
         return questionService.getAllQuestions();
     }
 
     @GetMapping("/category/{category}")
-    public List<Question> getQuestionsByCategory(
+    public ResponseEntity<List<Question>> getQuestionsByCategory(
             @PathVariable String category
     ) {
         return questionService.getQuestionsByCategory(category);
     }
 
     @PostMapping("/add")
-    public Question addQuestion(
+    public ResponseEntity<String> addQuestion(
             @RequestBody Question question
     ) {
         return questionService.addQuestion(question);
