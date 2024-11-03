@@ -4,6 +4,7 @@ import com.capellax.quizapp.dao.QuestionDAO;
 import com.capellax.quizapp.dao.QuizDAO;
 import com.capellax.quizapp.model.Question;
 import com.capellax.quizapp.model.Quiz;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,21 +23,20 @@ public class QuizService {
     private final QuizDAO quizDAO;
     private final QuestionDAO questionDAO;
 
+    @Transactional
     public ResponseEntity<String> createQuiz(String category, int numQ, String title) {
-        List<Question> questions = questionDAO.findByCategoryIgnoreCase(category);
 
-        Collections.shuffle(questions);
-        if (questions.size() > numQ) {
-            questions = questions.subList(0, numQ);
-        }
+        List<Question> questions = questionDAO.findRandomQuestionsByCategory(category, numQ);
+        System.out.println("Retrieved Questions: " + questions);
 
         Quiz quiz = new Quiz();
         quiz.setTitle(title);
         quiz.setQuestions(questions);
-
         quizDAO.save(quiz);
+        quizDAO.flush();
 
-        return new ResponseEntity<>("Quiz created successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>("Success", HttpStatus.CREATED);
+
     }
 
 

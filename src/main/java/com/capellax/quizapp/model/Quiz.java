@@ -21,11 +21,11 @@ public class Quiz {
 
     private String title;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     @JoinTable(
             name = "quiz_questions",
             joinColumns = @JoinColumn(name = "quiz_id"),
-            inverseJoinColumns = @JoinColumn(name = "question_id")
+            inverseJoinColumns = @JoinColumn(name = "questions_id")
     )
     private List<Question> questions;
 
