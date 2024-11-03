@@ -21,7 +21,7 @@ public class Quiz {
 
     private String title;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "quiz_questions",
             joinColumns = @JoinColumn(name = "quiz_id"),

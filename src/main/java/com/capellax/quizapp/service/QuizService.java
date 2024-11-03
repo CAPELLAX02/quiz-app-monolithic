@@ -3,18 +3,17 @@ package com.capellax.quizapp.service;
 import com.capellax.quizapp.dao.QuestionDAO;
 import com.capellax.quizapp.dao.QuizDAO;
 import com.capellax.quizapp.model.Question;
+import com.capellax.quizapp.model.QuestionWrapper;
 import com.capellax.quizapp.model.Quiz;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +38,29 @@ public class QuizService {
 
     }
 
+    public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(Integer id) {
+        Optional<Quiz> quizOptional = quizDAO.findById(id);
+        if (quizOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<Question> questionsFromDB = quizOptional.get().getQuestions();
+        if (questionsFromDB.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        List<QuestionWrapper> questionForUser = questionsFromDB.stream()
+                .map(question -> new QuestionWrapper(
+                        question.getId(),
+                        question.getQuestionTitle(),
+                        question.getOption1(),
+                        question.getOption2(),
+                        question.getOption3(),
+                        question.getOption4()
+                ))
+                .toList();
+
+        return new ResponseEntity<>(questionForUser, HttpStatus.OK);
+    }
 
 }
